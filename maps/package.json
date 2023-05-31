@@ -1,5 +1,15 @@
 {
   "dependencies": {
-    "@faker-js/faker": "^7.6.0"
+    "@faker-js/faker": "^7.6.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/google.maps": "^3.53.2",
+    "@types/node": "^20.2.5",
+    "dotenv": "^16.0.3",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10"
   }
 }
