@@ -1,0 +1,1 @@
+{"mappings":"AAAA;;;;;;AAMA","sources":["css/styles.css"],"sourcesContent":["* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nhtml,\nbody {\n    height: 100%;\n    width: 100%;\n}\n\n#map {\n    height: 100%;\n    width: 100%;\n}"],"names":[],"version":3,"file":"index.748ad148.css.map","sourceRoot":"/__parcel_source_root/"}
