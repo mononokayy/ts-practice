@@ -1,3 +1,5 @@
+import { Sorter } from "./Sorter";
+
 class Node {
     next: Node | null = null;
 
@@ -5,10 +7,10 @@ class Node {
 }
 
 
-// a linked list has a value and a pointer to the next item in the list
-// this pointer should be a unique identifier
-// the last link will have a pointer value of NULL
-export class LinkedList {
+// a linked list has a value and a pointer to the next item in the list. this
+// pointer should be a unique identifier. the last link will have a pointer value of NULL.
+// because LinkedList doesn't have a constructor, it doesn't need super() called in it.
+export class LinkedList extends Sorter {
     // head property is either a reference to a node or null if the list is empty
     // it is the head of the list, the first node
     head: Node | null = null;

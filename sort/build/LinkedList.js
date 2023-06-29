@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LinkedList = void 0;
+const Sorter_1 = require("./Sorter");
 class Node {
     constructor(data) {
         this.data = data;
         this.next = null;
     }
 }
-// a linked list has a value and a pointer to the next item in the list
-// this pointer should be a unique identifier
-// the last link will have a pointer value of NULL
-class LinkedList {
+// a linked list has a value and a pointer to the next item in the list. this
+// pointer should be a unique identifier. the last link will have a pointer value of NULL.
+// because LinkedList doesn't have a constructor, it doesn't need super() called in it.
+class LinkedList extends Sorter_1.Sorter {
     constructor() {
+        super(...arguments);
         // head property is either a reference to a node or null if the list is empty
         // it is the head of the list, the first node
         this.head = null;
