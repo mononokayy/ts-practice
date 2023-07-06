@@ -1,15 +1,8 @@
 import { CsvFileReader } from "./CsvFileReader";
+import { MatchResult } from "./MatchResult";
 
 const reader = new CsvFileReader('football.csv');
 reader.read();
-
-// enumerations are a TS concept that shows that the values inside are closely
-// related in some manner and that the values will be determined upon being compiled
-enum MatchResult {
-    HomeWin = 'H',
-    AwayWin = 'A',
-    Draw = 'D'
-};
 
 let manUnitedWins = 0;
 
