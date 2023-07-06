@@ -1,8 +1,6 @@
 import { dateStringToDate } from './utils';
 import { MatchResult } from './MatchResult';
-
-// We create a tuple to define the return value of read()
-type MatchData = [Date, string, string, number, number, MatchResult, string];
+import { MatchData } from './MatchData';
 
 interface DataReader {
     read(): void;
