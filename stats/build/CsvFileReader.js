@@ -19,22 +19,23 @@ class CsvFileReader {
             .map((row) => {
             return row.split(',');
         })
-            .map((row) => {
-            return [
-                (0, utils_1.dateStringToDate)(row[0]),
-                row[1],
-                row[2],
-                parseInt(row[3]),
-                parseInt(row[4]),
-                // using "as" is a type assertion, meaning we know what is going on
-                // in our code and overrides TypeScript's default behavior
-                // we're using this because TS would see row[5] as a string, but
-                // we know it is a string containing one of our values written in
-                // the MatchResults enum
-                row[5],
-                row[6]
-            ];
-        });
+            .map(this.mapRow);
+    }
+    mapRow(row) {
+        return [
+            (0, utils_1.dateStringToDate)(row[0]),
+            row[1],
+            row[2],
+            parseInt(row[3]),
+            parseInt(row[4]),
+            // using "as" is a type assertion, meaning we know what is going on
+            // in our code and overrides TypeScript's default behavior
+            // we're using this because TS would see row[5] as a string, but
+            // we know it is a string containing one of our values written in
+            // the MatchResults enum
+            row[5],
+            row[6]
+        ];
     }
 }
 exports.CsvFileReader = CsvFileReader;
