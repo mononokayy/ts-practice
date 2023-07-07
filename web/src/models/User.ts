@@ -4,7 +4,7 @@ interface UserProps {
     age?: number;
 }
 
-type Callback = () => {};
+type Callback = () => void;
 
 export class User {
     events: { [key: string]: Callback[] } = {};
@@ -19,7 +19,22 @@ export class User {
         Object.assign(this.data, update);
     }
 
-    on(eventName: string, callback: Callback):  {
-        d
+    on(eventName: string, callback: Callback): void {
+         // can be Callback[] or undefined 
+        const handlers = this.events[eventName]  || [];
+        handlers.push(callback);
+        this.events[eventName] = handlers;
+    }
+
+    trigger(eventName: string): void {
+        const handlers = this.events[eventName];
+
+        if (!handlers || handlers.length === 0) {
+            return;
+        }
+
+        handlers.forEach(callback => {
+            callback();
+        })
     }
 }

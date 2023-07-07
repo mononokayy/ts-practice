@@ -575,13 +575,20 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"955hi":[function(require,module,exports) {
 var _user = require("./models/User");
-const user = new (0, _user.User)({});
-user.set({
-    name: "newname",
-    age: 9999
+const user = new (0, _user.User)({
+    name: "myname",
+    age: 20
 });
-console.log(user.get("name"));
-console.log(user.get("age"));
+user.on("change", ()=>{
+    console.log("Change 1");
+});
+user.on("change", ()=>{
+    console.log("Change 2");
+});
+user.on("save", ()=>{
+    console.log("Save was triggered");
+});
+user.trigger("change");
 
 },{"./models/User":"2I8XS"}],"2I8XS":[function(require,module,exports) {
 // the question mark allows the property to be optional
@@ -598,6 +605,19 @@ class User {
     }
     set(update) {
         Object.assign(this.data, update);
+    }
+    on(eventName, callback) {
+        // can be Callback[] or undefined 
+        const handlers = this.events[eventName] || [];
+        handlers.push(callback);
+        this.events[eventName] = handlers;
+    }
+    trigger(eventName) {
+        const handlers = this.events[eventName];
+        if (!handlers || handlers.length === 0) return;
+        handlers.forEach((callback)=>{
+            callback();
+        });
     }
 }
 
