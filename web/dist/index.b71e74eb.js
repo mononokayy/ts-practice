@@ -576,9 +576,14 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"h7u1C":[function(require,module,exports) {
 var _user = require("./models/User");
 const user = new (0, _user.User)({
-    name: "new record",
-    age: 393
-}); // user.save();
+    id: 1,
+    name: "newer name",
+    age: 0
+});
+user.on("save", ()=>{
+    console.log(user);
+});
+user.save();
 
 },{"./models/User":"4rcHn"}],"4rcHn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -586,15 +591,45 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "User", ()=>User);
 var _eventing = require("./Eventing");
 var _sync = require("./Sync");
+var _attributes = require("./Attributes");
 const rootUrl = "http://localhost:3000/users";
 class User {
-    constructor(){
+    constructor(attrs){
         this.events = new (0, _eventing.Eventing)();
         this.sync = new (0, _sync.Sync)(rootUrl);
+        this.attributes = new (0, _attributes.Attributes)(attrs);
+    }
+    // returning a reference to the events.on method
+    get on() {
+        return this.events.on;
+    }
+    get trigger() {
+        return this.events.trigger;
+    }
+    get get() {
+        return this.attributes.get;
+    }
+    set(update) {
+        this.attributes.set(update);
+        this.events.trigger("change");
+    }
+    fetch() {
+        const id = this.attributes.get("id");
+        if (typeof id !== "number") throw new Error("Cannot fetch without an id");
+        else this.sync.fetch(id).then((response)=>{
+            this.set(response.data);
+        });
+    }
+    save() {
+        this.sync.save(this.attributes.getAll()).then((response)=>{
+            this.trigger("save");
+        }).catch(()=>{
+            this.trigger("error");
+        });
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv","./Eventing":"7459s","./Sync":"QO3Gl"}],"jtGkv":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv","./Eventing":"7459s","./Sync":"QO3Gl","./Attributes":"6Bbds"}],"jtGkv":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -629,21 +664,21 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Eventing", ()=>Eventing);
 class Eventing {
-    on(eventName, callback) {
-        // can be Callback[] or undefined
-        const handlers = this.events[eventName] || [];
-        handlers.push(callback);
-        this.events[eventName] = handlers;
-    }
-    trigger(eventName) {
-        const handlers = this.events[eventName];
-        if (!handlers || handlers.length === 0) return;
-        handlers.forEach((callback)=>{
-            callback();
-        });
-    }
     constructor(){
         this.events = {};
+        this.on = (eventName, callback)=>{
+            // can be Callback[] or undefined
+            const handlers = this.events[eventName] || [];
+            handlers.push(callback);
+            this.events[eventName] = handlers;
+        };
+        this.trigger = (eventName)=>{
+            const handlers = this.events[eventName];
+            if (!handlers || handlers.length === 0) return;
+            handlers.forEach((callback)=>{
+                callback();
+            });
+        };
     }
 }
 
@@ -656,14 +691,14 @@ var _axiosDefault = parcelHelpers.interopDefault(_axios);
 class Sync {
     constructor(rootUrl){
         this.rootUrl = rootUrl;
-    }
-    fetch(id) {
-        return (0, _axiosDefault.default).get(`${this.rootUrl}/${id}`);
-    }
-    save(data) {
-        const { id } = data;
-        if (id) return (0, _axiosDefault.default).put(`${this.rootUrl}/${id}`, data);
-        else return (0, _axiosDefault.default).post(this.rootUrl, data);
+        this.fetch = (id)=>{
+            return (0, _axiosDefault.default).get(`${this.rootUrl}/${id}`);
+        };
+        this.save = (data)=>{
+            const { id } = data;
+            if (id) return (0, _axiosDefault.default).put(`${this.rootUrl}/${id}`, data);
+            else return (0, _axiosDefault.default).post(this.rootUrl, data);
+        };
     }
 }
 
@@ -4991,6 +5026,26 @@ Object.entries(HttpStatusCode).forEach(([key, value])=>{
     HttpStatusCode[value] = key;
 });
 exports.default = HttpStatusCode;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"6Bbds":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Attributes", ()=>Attributes);
+class Attributes {
+    constructor(data){
+        this.data = data;
+        this.// K represents a type for the key of our object
+        get = (key)=>{
+            return this.data[key];
+        };
+        this.set = (update)=>{
+            Object.assign(this.data, update);
+        };
+    }
+    getAll() {
+        return this.data;
+    }
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}]},["8VDAM","h7u1C"], "h7u1C", "parcelRequire2d1f")
 
