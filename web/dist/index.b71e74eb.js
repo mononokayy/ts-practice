@@ -588,16 +588,9 @@ var _eventing = require("./Eventing");
 var _sync = require("./Sync");
 const rootUrl = "http://localhost:3000/users";
 class User {
-    constructor(data){
-        this.data = data;
+    constructor(){
         this.events = new (0, _eventing.Eventing)();
         this.sync = new (0, _sync.Sync)(rootUrl);
-    }
-    get(propName) {
-        return this.data[propName];
-    }
-    set(update) {
-        Object.assign(this.data, update);
     }
 }
 
