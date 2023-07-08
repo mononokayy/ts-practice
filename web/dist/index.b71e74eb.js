@@ -578,19 +578,20 @@ var _user = require("./models/User");
 const user = new (0, _user.User)({
     name: "new record",
     age: 393
-});
-user.save();
+}); // user.save();
 
 },{"./models/User":"4rcHn"}],"4rcHn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "User", ()=>User);
-var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _eventing = require("./Eventing");
+var _sync = require("./Sync");
+const rootUrl = "http://localhost:3000/users";
 class User {
     constructor(data){
         this.data = data;
-        this.events = {};
+        this.events = new (0, _eventing.Eventing)();
+        this.sync = new (0, _sync.Sync)(rootUrl);
     }
     get(propName) {
         return this.data[propName];
@@ -598,8 +599,45 @@ class User {
     set(update) {
         Object.assign(this.data, update);
     }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv","./Eventing":"7459s","./Sync":"QO3Gl"}],"jtGkv":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"7459s":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Eventing", ()=>Eventing);
+class Eventing {
     on(eventName, callback) {
-        // can be Callback[] or undefined 
+        // can be Callback[] or undefined
         const handlers = this.events[eventName] || [];
         handlers.push(callback);
         this.events[eventName] = handlers;
@@ -611,16 +649,28 @@ class User {
             callback();
         });
     }
-    fetch() {
-        (0, _axiosDefault.default).get(`http://localhost:3000/users/${this.get("id")}`).then((response)=>{
-            this.set(response.data);
-        });
+    constructor(){
+        this.events = {};
     }
-    save() {
-        const id = this.get("id");
-        if (id) (0, _axiosDefault.default).put(`http://localhost:3000/users/${id}`, this.data);
-        else // post
-        (0, _axiosDefault.default).post(`http://localhost:3000/users`, this.data);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"QO3Gl":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Sync", ()=>Sync);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+class Sync {
+    constructor(rootUrl){
+        this.rootUrl = rootUrl;
+    }
+    fetch(id) {
+        return (0, _axiosDefault.default).get(`${this.rootUrl}/${id}`);
+    }
+    save(data) {
+        const { id } = data;
+        if (id) return (0, _axiosDefault.default).put(`${this.rootUrl}/${id}`, data);
+        else return (0, _axiosDefault.default).post(this.rootUrl, data);
     }
 }
 
@@ -1301,37 +1351,7 @@ function bind(fn, thisArg) {
     };
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"jtGkv":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"cpqD8":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"cpqD8":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _utilsJs = require("./../utils.js");
