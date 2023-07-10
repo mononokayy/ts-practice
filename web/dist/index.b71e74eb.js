@@ -588,11 +588,15 @@ class UserForm {
     }
     eventsMap() {
         return {
-            "click:button": this.onButtonClick
+            "click:button": this.onButtonClick,
+            "mouseenter:h1": this.onHeaderHover
         };
     }
     onButtonClick() {
         console.log("Hi there");
+    }
+    onHeaderHover() {
+        console.log("H1 was hovered over");
     }
     template() {
         return `
@@ -603,9 +607,19 @@ class UserForm {
         <div>
         `;
     }
+    bindEvents(fragment) {
+        const eventsMap = this.eventsMap();
+        for(let eventsKey in eventsMap){
+            const [eventName, selector] = eventsKey.split(":");
+            fragment.querySelectorAll(selector).forEach((element)=>{
+                element.addEventListener(eventName, eventsMap[eventsKey]);
+            });
+        }
+    }
     render() {
         const templateElement = document.createElement("template");
         templateElement.innerHTML = this.template();
+        this.bindEvents(templateElement.content);
         this.parent.append(templateElement.content);
     }
 }
