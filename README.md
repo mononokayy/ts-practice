@@ -17,6 +17,6 @@
    1. In the terminal, type `npm start` and hit enter
 7. For the web project directory:
     1. In the terminal, type `npm start:db` and hit enter
-    2. Then, type `npm start:parcel` and hit enter
+    2. Then, in a new terminal, type `npm start:parcel` and hit enter
 8. Open your browser and go to `localhost:1234`
 9. Enjoy!
