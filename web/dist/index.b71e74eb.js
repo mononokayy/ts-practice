@@ -580,8 +580,11 @@ const user = (0, _user.User).buildUser({
     name: "NAME",
     age: 20
 });
-const userForm = new (0, _userForm.UserForm)(document.getElementById("root"), user);
-userForm.render();
+const root = document.getElementById("root");
+if (root) {
+    const userForm = new (0, _userForm.UserForm)(root, user);
+    userForm.render();
+} else throw new Error("Root element not found");
 
 },{"./views/UserForm":"gXSLD","./models/User":"4rcHn"}],"gXSLD":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -591,18 +594,31 @@ class UserForm {
     constructor(parent, model){
         this.parent = parent;
         this.model = model;
+        this.onSetAgeClick = ()=>{
+            this.model.setRandomAge();
+        };
+        this.onSetNameClick = ()=>{
+            const input = this.parent.querySelector("input");
+            // this type guard keeps us from getting null as a possible value
+            if (input) {
+                const name = input.value;
+                this.model.set({
+                    name
+                });
+            }
+        };
+        this.bindModel();
+    }
+    bindModel() {
+        this.model.on("change", ()=>{
+            this.render();
+        });
     }
     eventsMap() {
         return {
-            "click:button": this.onButtonClick,
-            "mouseenter:h1": this.onHeaderHover
+            "click:.set-age": this.onSetAgeClick,
+            "click:.set-name": this.onSetNameClick
         };
-    }
-    onButtonClick() {
-        console.log("Hi there");
-    }
-    onHeaderHover() {
-        console.log("H1 was hovered over");
     }
     template() {
         return `
@@ -611,7 +627,8 @@ class UserForm {
             <div>User Name: ${this.model.get("name")}</div>
             <div>User Age: ${this.model.get("age")}</div>
             <input />
-            <button>Click Me</button>
+            <button class='set-name'>Change Name</button> <br><br>
+            <button class='set-age'>Set Random Age</button>
         <div>
         `;
     }
@@ -625,6 +642,7 @@ class UserForm {
         }
     }
     render() {
+        this.parent.innerHTML = "";
         const templateElement = document.createElement("template");
         templateElement.innerHTML = this.template();
         this.bindEvents(templateElement.content);
@@ -678,6 +696,12 @@ class User extends (0, _model.Model) {
     }
     static buildUserCollection() {
         return new (0, _collection.Collection)(rootUrl, (json)=>User.buildUser(json));
+    }
+    setRandomAge() {
+        const age = Math.round(Math.random() * 100);
+        this.set({
+            age
+        });
     }
 }
 
