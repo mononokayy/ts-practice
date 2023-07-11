@@ -5,3 +5,4 @@ node_modules
 data.mdb
 lock.mdb
 db.json
+package-lock.json
