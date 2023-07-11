@@ -5103,12 +5103,18 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "UserEdit", ()=>UserEdit);
 var _view = require("./View");
+var _userShow = require("./UserShow");
+var _userForm = require("./UserForm");
 class UserEdit extends (0, _view.View) {
     regionsMap() {
         return {
             userShow: ".user-show",
             userForm: ".user-form"
         };
+    }
+    onRender() {
+        new (0, _userShow.UserShow)(this.regions.userShow, this.model).render();
+        new (0, _userForm.UserForm)(this.regions.userForm, this.model).render();
     }
     template() {
         return `
@@ -5120,7 +5126,7 @@ class UserEdit extends (0, _view.View) {
     }
 }
 
-},{"./View":"5Vo78","@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"5Vo78":[function(require,module,exports) {
+},{"./View":"5Vo78","@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv","./UserShow":"2Tlyi","./UserForm":"gXSLD"}],"5Vo78":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "View", ()=>View);
@@ -5159,16 +5165,79 @@ class View {
             if (element) this.regions[key] = element;
         }
     }
+    onRender() {}
     render() {
         this.parent.innerHTML = "";
         const templateElement = document.createElement("template");
         templateElement.innerHTML = this.template();
         this.bindEvents(templateElement.content);
         this.mapRegions(templateElement.content);
+        this.onRender();
         this.parent.append(templateElement.content);
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}]},["8VDAM","h7u1C"], "h7u1C", "parcelRequire2d1f")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"2Tlyi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "UserShow", ()=>UserShow);
+var _view = require("./View");
+class UserShow extends (0, _view.View) {
+    template() {
+        return `
+        <div>
+            <h1>User Detail</h1>
+            <div>User Name: ${this.model.get("name")}</div>
+            <div>User Age: ${this.model.get("age")}</div>
+        </div>
+        `;
+    }
+}
+
+},{"./View":"5Vo78","@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}],"gXSLD":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "UserForm", ()=>UserForm);
+var _view = require("./View");
+class UserForm extends (0, _view.View) {
+    eventsMap() {
+        return {
+            "click:.set-age": this.onSetAgeClick,
+            "click:.set-name": this.onSetNameClick,
+            "click:.save-model": this.onSaveClick
+        };
+    }
+    template() {
+        return `
+        <div>
+            <input placeholder="${this.model.get("name")}"/>
+            <button class='set-name'>Change Name</button> <br><br>
+            <button class='set-age'>Set Random Age</button>
+            <button class='save-model'>Save User</button>
+        <div>
+        `;
+    }
+    constructor(...args){
+        super(...args);
+        this.onSetAgeClick = ()=>{
+            this.model.setRandomAge();
+        };
+        this.onSetNameClick = ()=>{
+            const input = this.parent.querySelector("input");
+            // this type guard keeps us from getting null as a possible value
+            if (input) {
+                const name = input.value;
+                this.model.set({
+                    name
+                });
+            }
+        };
+        this.onSaveClick = ()=>{
+            this.model.save();
+        };
+    }
+}
+
+},{"./View":"5Vo78","@parcel/transformer-js/src/esmodule-helpers.js":"jtGkv"}]},["8VDAM","h7u1C"], "h7u1C", "parcelRequire2d1f")
 
 //# sourceMappingURL=index.b71e74eb.js.map
