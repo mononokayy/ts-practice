@@ -1,4 +1,5 @@
-import GuestList from './state/GuestList';
+import UserSearch from './state/UserSearch';
+
 // 1) Import ReactDOM library
 import ReactDOM from 'react-dom/client';
 
@@ -12,7 +13,7 @@ const root = ReactDOM.createRoot(el!);
 const App = () => {
     return (
         <div>
-            <GuestList />
+            <UserSearch />
         </div>
     );
 };
