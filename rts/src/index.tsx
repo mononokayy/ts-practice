@@ -1,3 +1,4 @@
+import GuestList from './state/GuestList';
 // 1) Import ReactDOM library
 import ReactDOM from 'react-dom/client';
 
@@ -11,7 +12,7 @@ const root = ReactDOM.createRoot(el!);
 const App = () => {
     return (
         <div>
-            <h1>Hi there!</h1>
+            <GuestList />
         </div>
     );
 };
